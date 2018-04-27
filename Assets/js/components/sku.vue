@@ -170,7 +170,7 @@
                 return !!this.pdc ? JSON.parse(this.pdc) : null;
             },
             swatchColor: function () {
-                return !!this.pdc ? JSON.parse(this.pdcObj.swatch_colors) : {}
+                return !!this.pdc &&  !!this.pdcObj.swatch_colors ? JSON.parse(this.pdcObj.swatch_colors) : {}
             },
             fillDataAttr: function () {
                 return !!this.filledAttr ? JSON.parse(this.filledAttr) : null;
