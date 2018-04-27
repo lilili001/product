@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Events\LoadingBackendTranslations;
-use Modules\Media\Image\ThumbnailManager;
+//use Modules\Media\Image\ThumbnailManager;
 use Modules\Product\Events\Handlers\RegisterProductSidebar;
 
 class ProductServiceProvider extends ServiceProvider
@@ -39,16 +39,16 @@ class ProductServiceProvider extends ServiceProvider
             // append translations
         });
 
-        $this->app[ThumbnailManager::class]->registerThumbnail('productThumb', [
-            'resize' => [
-                'width' => 600,
-                'height' => 600,
-                'callback' => function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                },
-            ],
-        ]);
+        //$this->app[ThumbnailManager::class]->registerThumbnail('productThumb', [
+//             'resize' => [
+//                 'width' => 600,
+//                 'height' => 600,
+//                 'callback' => function ($constraint) {
+//                     $constraint->aspectRatio();
+//                     $constraint->upsize();
+//                 },
+//             ],
+//         ]);
     }
 
     public function boot()
