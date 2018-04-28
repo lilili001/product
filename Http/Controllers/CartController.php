@@ -12,6 +12,7 @@ use AjaxResponse;
 use Cart;
 use ShoppingCart;
 use Modules\User\Entities\UserAddress;
+
 class CartController extends Controller
 {
     protected $product;
@@ -32,13 +33,14 @@ class CartController extends Controller
         $items = [];
         foreach (Cart::contents() as $key => $item) {
             $equalUserId = $item->options['userId'] == user()->id;
+
             $condition = $type ?  $equalUserId &&  !!($item->type)  : $equalUserId ;
+
             if ($condition) {
                 $item->__raw_id = $key;
                 $items[] = $item->toArray();
             }
         }
-        info($items);
         return $items;
     }
 
@@ -55,6 +57,7 @@ class CartController extends Controller
         $items = $this->getCurrentUserCart(true);
 
         $addresses = UserAddress::where([
+
             'user_id' => user()->id
         ])->get();
 
