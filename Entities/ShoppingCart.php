@@ -2,7 +2,6 @@
 
 namespace Modules\Product\Entities;
 
-use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 
 class ShoppingCart extends Model

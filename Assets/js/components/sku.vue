@@ -1,5 +1,6 @@
 <template>
     <div class="mar-t14">
+        sdfsdf
         <div v-for="(item,key ) in skuAttrs">
             <span>{{item.name}}:</span>
             <input type="hidden" :name="item['key']" v-model="checkList[item['key']]" required>
@@ -10,7 +11,7 @@
                             size="mini"
                             plain
                             @click.stop="fnUploadSwatch(key1)"
-                            v-if="!!checkList['color'] && checkList['color'].indexOf(key1)!=-1 && !!swatchColor[key1]">
+                            v-if="!!checkList['color'] && checkList['color'].indexOf(key1)!=-1 &&  !!swatchColor[key1]">
                         <img
                                 width="30"
                                 height="30"
@@ -21,7 +22,7 @@
 
                     <el-button
                             @click.stop="fnUploadSwatch(key1)"
-                            v-show="item['key']=='color' &&  indexofArr(checkList[item['key']],key1) !== -1 && !swatchColor[key1]"
+                            v-show="item['key']=='color' &&  indexofArr(checkList[item['key']],key1) !== -1 &&    !swatchColor[key1]"
                             size="mini">上传<i class="el-icon-upload el-icon--right"></i></el-button>
                 </el-checkbox>
             </el-checkbox-group>
@@ -171,7 +172,7 @@
             },
             swatchColor: function () {
 
-                return !!this.pdc &&  !!this.pdcObj.swatch_colors ? JSON.parse(this.pdcObj.swatch_colors) : {}
+                return !!this.pdc &&  !!this.pdcObj.swatch_colors ? JSON.parse(this.pdcObj.swatch_colors) :  {}
             },
             fillDataAttr: function () {
                 return !!this.filledAttr ? JSON.parse(this.filledAttr) : null;

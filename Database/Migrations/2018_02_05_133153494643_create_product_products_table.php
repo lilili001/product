@@ -21,7 +21,7 @@ class CreateProductProductsTable extends Migration
             $table->boolean('sort_order');
             $table->decimal('price',18,2);
             $table->integer('stock');
-
+            $table->text('swatch_colors');
             $table->timestamps();
         });
         Schema::create('product__products_cats', function (Blueprint $table) {

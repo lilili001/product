@@ -2,20 +2,22 @@
 
 namespace Modules\Product\Http\Controllers;
 
+use App\Acart;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-
+use Illuminate\Support\Facades\Cache;
 use Modules\Media\Image\Imagy;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ShoppingCart;
 use Modules\Product\Repositories\ProductRepository;
 use AjaxResponse;
 use Modules\User\Entities\UserAddress;
-use Cart;
+use   Cart;
 class CartController extends Controller
 {
     protected $product;
     protected $attr;
+    protected $store;
     /**
      * ProductController constructor.
      * @param $product
@@ -43,7 +45,6 @@ class CartController extends Controller
     public function cart()
     {
         $this->compareSessionVsDb();
-
         $items = $this->getCurrentUserCart();
         $total = $this->getSelectedTotal();
         return view('cart', compact('items','total'));

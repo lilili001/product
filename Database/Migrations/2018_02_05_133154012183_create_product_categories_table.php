@@ -18,7 +18,6 @@ class CreateProductCategoriesTable extends Migration
             // Your fields
             $table->boolean('status');
             $table->integer('pid');
-
             $table->timestamps();
         });
     }
