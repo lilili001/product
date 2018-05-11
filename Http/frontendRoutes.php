@@ -46,6 +46,7 @@ $router->group([], function (Router $router) {
         'as' =>   'updateStatus',
         'middleware' => 'logged.in'
     ]);
+
     $router->post('bulkUpdateStatus',[
         'uses' => 'CartController@bulkUpdateStatus',
         'as' =>   'bulkUpdateStatus',
@@ -57,6 +58,7 @@ $router->group([], function (Router $router) {
         'as' =>   'getSelectedTotal',
         'middleware' => 'logged.in'
     ]);
+
 
     $router->get('cart',[
         'as' => $locale . '.product.cart',

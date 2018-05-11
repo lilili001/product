@@ -2,27 +2,31 @@
 
 namespace Modules\Product\Http\Controllers;
 
-use App\Acart;
+
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Modules\Media\Image\Imagy;
 use Modules\Product\Entities\Product;
+
 use Modules\Product\Entities\ShoppingCart;
 use Modules\Product\Repositories\ProductRepository;
 use AjaxResponse;
 use Modules\User\Entities\UserAddress;
 use   Cart;
+
 class CartController extends Controller
 {
     protected $product;
     protected $attr;
-    protected $store;
+
     /**
      * ProductController constructor.
      * @param $product
      */
+
     public function __construct(ProductRepository $product, Imagy $imagy )
+
     {
         $this->imagy = $imagy;
         $this->product = $product;
@@ -34,7 +38,6 @@ class CartController extends Controller
         foreach (Cart::instance('cart')->content() as $key => $item) {
             $equalUserId = $item->options['userId'] == user()->id;
             $condition = $type ?  $equalUserId &&   !!($item->options['selected'])   : $equalUserId ;
-
             if ($condition) {
                 $items[] = $item->toArray();
             }
@@ -59,9 +62,7 @@ class CartController extends Controller
         $addresses = UserAddress::where([
             'user_id' => user()->id
         ])->get();
-
         $total = $this->getSelectedTotal();
-
         return view('checkout',compact('items','user','addresses','total'));
     }
 
@@ -91,12 +92,14 @@ class CartController extends Controller
                 'options' => [
                     'sku_options' => $options,
                     'selectedItemLocale' => request('selectedObjLocale'),
+
                     'selected' => false,
                     'image' => !empty($imagePath) ? $imagePath : $this->imagy->getThumbnail($product->featured_images->first()->path, 'smallThumb'),
                     'slug' => '/product/' . $product->slug,
                     'userId' => user()->id
                 ]
             ];
+
 
             //查询数据库有没有shoppingcart实例
             $instances = ShoppingCart::pluck('instance')->toArray();
@@ -120,6 +123,7 @@ class CartController extends Controller
             $this->updateDbcart();
 
             return AjaxResponse::success('添加成功',Cart::instance('cart')->content());
+
         }
     }
 
@@ -127,7 +131,6 @@ class CartController extends Controller
     {
         $rawId = request('rawId');
         $qty = request('qty');
-
         $item = Cart::instance('cart')->get($rawId);
         $sku = $this->product->findSku($product, $item->options['sku_options']);
 
