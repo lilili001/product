@@ -123,7 +123,6 @@ class EloquentProductRepository extends EloquentBaseRepository implements Produc
         //sku table
         DB::table('product__skus')->insert($dataSkus);
 
-
         //获取选中的sku 属性值列表
         $dataAttrSkus = (new Util())->assignAttrIds($skuCheckList, $product->id, true);
         //skuattr table
@@ -142,7 +141,6 @@ class EloquentProductRepository extends EloquentBaseRepository implements Produc
 
         DB::table('product__attrs')->insert($dataAttrs);
     }
-
 
     protected function handleColorSwatch($data, $product)
     {

@@ -39,16 +39,6 @@ class ProductServiceProvider extends ServiceProvider
             // append translations
         });
 
-        //$this->app[ThumbnailManager::class]->registerThumbnail('productThumb', [
-//             'resize' => [
-//                 'width' => 600,
-//                 'height' => 600,
-//                 'callback' => function ($constraint) {
-//                     $constraint->aspectRatio();
-//                     $constraint->upsize();
-//                 },
-//             ],
-//         ]);
     }
 
     public function boot()
@@ -140,6 +130,18 @@ class ProductServiceProvider extends ServiceProvider
                 }
 
                 return new \Modules\Product\Repositories\Cache\CacheAttrDecorator($repository);
+            }
+        );
+        $this->app->bind(
+            'Modules\Product\Repositories\ShoppingCartRepository',
+            function () {
+                $repository = new \Modules\Product\Repositories\Eloquent\EloquentShoppingCartRepository(new \Modules\Product\Entities\ShoppingCart());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Product\Repositories\Cache\CacheAttrsetDecorator($repository);
             }
         );
 // add bindings

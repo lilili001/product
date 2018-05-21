@@ -5,65 +5,96 @@ namespace Modules\Product\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
+use Modules\Currency\Entities\CurrencyRate;
 use Modules\Media\Image\Imagy;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ShoppingCart;
 use Modules\Product\Repositories\ProductRepository;
 use AjaxResponse;
+
+use Modules\Product\Repositories\ShoppingCartRepository;
 use Modules\User\Entities\UserAddress;
 use Cart;
+
+/**
+ * Class CartController
+ * @package Modules\Product\Http\Controllers
+ */
 class CartController extends Controller
 {
+    /**
+     * @var ProductRepository
+     */
     protected $product;
+    /**
+     * @var
+     */
     protected $attr;
+    /**
+     * @var
+     */
     protected $store;
+    /**
+     * @var ShoppingCartRepository
+     */
+    protected $shopCart;
     /**
      * ProductController constructor.
      * @param $product
      */
-    public function __construct(ProductRepository $product, Imagy $imagy )
+    protected $allowedCurrencies;
+
+    protected $rate;//汇率
+    public function __construct(ProductRepository $product, Imagy $imagy , ShoppingCartRepository $shoppingcart )
     {
         $this->imagy = $imagy;
         $this->product = $product;
+        $this->shopCart = $shoppingcart;//引入ShoppingCartRepository
+
+        $allowedCurrencies = CurrencyRate::all()->toArray();
+        $allowedCurrencies = arrayChangeKey( $allowedCurrencies , 'currency_to' );
+        $this->allowedCurrencies = $allowedCurrencies;
+        $this->rate = $allowedCurrencies[ getCurrentCurrency() ]['rate'];
     }
 
-    public function getCurrentUserCart($type = false)
-    {
-        $items = [];
-        foreach (Cart::instance('cart')->content() as $key => $item) {
-            $equalUserId = $item->options['userId'] == user()->id;
-            $condition = $type ?  $equalUserId &&   !!($item->options['selected'])   : $equalUserId ;
-
-            if ($condition) {
-                $items[] = $item->toArray();
-            }
-        }
-        return $items;
-    }
-
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function cart()
     {
-        $this->compareSessionVsDb();
-        $items = $this->getCurrentUserCart();
-        $total = $this->getSelectedTotal();
+        $this->shopCart->compareSessionVsDb();
+        $items = $this->shopCart->getCurrentUserCart();
+
+        //total 是Cart计算出来的 不需要前台进行计算 前台直接显示值即可
+        $total = number_format($this->shopCart->getSelectedTotal(),2) * $this->rate;
         return view('cart', compact('items','total'));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function checkout()
     {
-        $this->compareSessionVsDb();
+        $this->shopCart->compareSessionVsDb();
         $user = user()->toArray();
-        $items = $this->getCurrentUserCart(true);
+        $items = $this->shopCart->getCurrentUserCart(true);
 
         $addresses = UserAddress::where([
             'user_id' => user()->id
         ])->get();
 
-        $total = $this->getSelectedTotal();
+        $total = $this->shopCart->getSelectedTotal() * $this->rate ;
 
-        return view('checkout',compact('items','user','addresses','total'));
+        $currencySymbol = getCurrentCurrency() . $this->allowedCurrencies[getCurrentCurrency()]['symbol'];
+
+        return view('checkout',compact('items','user','addresses','total' , 'currencySymbol' ));
     }
 
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @return mixed
+     */
     public function getSku(Product $product, Request $request)
     {
         $options = request('options');
@@ -71,6 +102,11 @@ class CartController extends Controller
         return AjaxResponse::success('addToCart', $sku);
     }
 
+    /**
+     * @param Product $product
+     * @param Request $request
+     * @return mixed
+     */
     public function addToCart(Product $product, Request $request)
     {
         $options = request('options');
@@ -122,6 +158,10 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param Product $product
+     * @return mixed
+     */
     public function updateCart(Product $product)
     {
         $rawId = request('rawId');
@@ -135,16 +175,21 @@ class CartController extends Controller
         } else {
             Cart::instance('cart')->update($rawId,$qty);
             $this->updateDbcart();
-            return AjaxResponse::success('修改成功',$this->getSelectedTotal());
+            return AjaxResponse::success('修改成功',$this->shopCart->getSelectedTotal());
         }
     }
 
+    /**
+     * @param null $rawId
+     * @param null $type
+     * @return mixed
+     */
     public function updateStatus($rawId = null, $type=null)
     {
         $rawId = request('rowId');
         $type = request('type');
 
-        $this->compareSessionVsDb();
+        $this->shopCart->compareSessionVsDb();
         $item = Cart::instance('cart')->get($rawId);
         $item->options['selected'] = $type;
         Cart::instance('cart')->update($rawId, ['options.selected' => $type]);
@@ -153,6 +198,10 @@ class CartController extends Controller
     }
 
     //批量改状态 是否选中 并设置选中总价
+
+    /**
+     * @return mixed
+     */
     public function bulkUpdateStatus()
     {
         $contents = Cart::instance('cart')->content();
@@ -163,6 +212,10 @@ class CartController extends Controller
         return AjaxResponse::success('修改成功');
     }
     //删除数据库
+
+    /**
+     * @return mixed
+     */
     public function deleteCartItem()
     {
         $rawId = request('rawId');
@@ -171,42 +224,18 @@ class CartController extends Controller
         return $bool ? AjaxResponse::success('修改成功') : AjaxResponse::fail('失败');
     }
 
-    //从当前cart session 中获取选中的总金额
-    public function getSelectedTotal(){
-        $total = 0;
-        $instance = Cart::instance('cart')->content();
-        foreach($instance as $key=>$item){
-            if($item->options['selected']){
-                $total += (float) ($item->price) * ($item->qty) ;
-            }
-        }
-        return $total;
-    }
-    //如果没有session 就从数据库里取 并赋给session
-    protected function compareSessionVsDb(){
-        $dataFromDb = $this->getCartFromDb();
-        if( !session()->has('cart.cart') && isset( $dataFromDb )   ){
-            Cart::instance('cart')->add( $dataFromDb->toArray()  );
-        }
-    }
-    //获取数据库cart对象
-    protected function getCartFromDb(){
-        if( ShoppingCart::count() == 0 ) return null;
-        $cartInstance = ShoppingCart::where([
-            'identifier' => user()->id,
-            'instance'   => 'cart'
-        ])->first()->content;
-        $cartInstance = unserialize( $cartInstance );
-        return $cartInstance;
-    }
     //更新数据库cart
+
+    /**
+     * @param array $dataToUpdateDatabase
+     */
     protected function updateDbcart($dataToUpdateDatabase = []){
         ShoppingCart::where([
             'identifier' => user()->id,
             'instance'   => 'cart'
         ])->update(array_merge([
             'content' => serialize( Cart::instance('cart')->content() ),
-            'selected_total' => $this->getSelectedTotal()
+            'selected_total' => $this->shopCart->getSelectedTotal()
         ],$dataToUpdateDatabase));
     }
 }

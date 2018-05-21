@@ -44,8 +44,6 @@ class RegisterProductSidebar implements \Maatwebsite\Sidebar\SidebarExtender
                      /* append */
                 );
 
-
-
                 $item->item(trans('attribute::attributes.attributes'), function (Item $item) {
                     $item->icon('fa fa-copy');
                     $item->weight(0);
