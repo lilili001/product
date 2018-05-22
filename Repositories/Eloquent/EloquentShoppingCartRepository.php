@@ -56,4 +56,18 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         return $items;
     }
 
+    public function remove($rawId)
+    {
+        //删除
+        Cart::instance('cart')->remove($rawId);
+        //删除数据库购物车
+        DB::table('shoppingcart')->where([
+            'identifier' => user()->id,
+            'instance'   => 'cart'
+        ])->update( [
+            'content' => serialize( Cart::instance('cart')->content() ),
+            'selected_total' => $this->getSelectedTotal()
+        ]);
+    }
+
 }
