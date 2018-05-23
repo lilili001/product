@@ -11,4 +11,6 @@ interface ShoppingCartRepository extends BaseRepository
     public function getCartFromDb();
     public function getCurrentUserCart($type = false);
     public function remove($rawId);
+    public  function StrOrderOne();
+    public function getSelectedAmount();
 }

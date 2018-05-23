@@ -13,7 +13,7 @@
 
 @section('content')
     {!! Form::open(['route' => ['admin.product.product.store'], 'method' => 'post']) !!}
-
+    <el-card>
     <ul id="myTab" class="nav nav-tabs">
         <li class="active">
             <a href="#base" data-toggle="tab">
@@ -80,7 +80,7 @@
         <button type="submit" class="btn btn-primary btn-flat">{{ trans('core::core.button.create') }}</button>
         <a class="btn btn-danger btn-flat" href="{{ route('admin.product.product.index')}}"><i class="fa fa-times"></i> {{ trans('core::core.button.cancel') }}</a>
     </div>
-
+    </el-card>
     {!! Form::close() !!}
 @stop
 

@@ -11,9 +11,16 @@ use DB;
 use Cart;
 use Modules\Product\Entities\ShoppingCart;
 
+/**
+ * Class EloquentShoppingCartRepository
+ * @package Modules\Product\Repositories\Eloquent
+ */
 class EloquentShoppingCartRepository extends EloquentBaseRepository implements ShoppingCartRepository
 {
     //从当前cart session 中获取选中的总金额
+    /**
+     * @return float|int
+     */
     public function getSelectedTotal(){
         $total = 0;
         $instance = Cart::instance('cart')->content();
@@ -25,6 +32,10 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         return $total;
     }
     //如果没有session 就从数据库里取 并赋给session
+
+    /**
+     *
+     */
     public function compareSessionVsDb(){
         $dataFromDb = $this->getCartFromDb();
         if( !session()->has('cart.cart') && isset( $dataFromDb )   ){
@@ -32,6 +43,10 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         }
     }
     //获取数据库cart对象
+
+    /**
+     * @return mixed|null
+     */
     public function getCartFromDb(){
         if( ShoppingCart::count() == 0 ) return null;
         $cartInstance = ShoppingCart::where([
@@ -42,6 +57,10 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         return $cartInstance;
     }
 
+    /**
+     * @param bool $type
+     * @return array
+     */
     public function getCurrentUserCart($type = false)
     {
         $items = [];
@@ -56,6 +75,9 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         return $items;
     }
 
+    /**
+     * @param $rawId
+     */
     public function remove($rawId)
     {
         //删除
@@ -70,4 +92,24 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         ]);
     }
 
+    /**
+     * @return string orderNo.
+     */
+    public  function StrOrderOne(){
+        /* 选择一个随机的方案 */
+        mt_srand((double) microtime() * 1000000);
+        return date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * @return mixed Order Amount
+     */
+    public function getSelectedAmount(){
+        return ShoppingCart::where([
+            'identifier' => user()->id,
+            'instance' => 'cart'
+        ])->first()->selected_total ;
+    }
 }
+
+
