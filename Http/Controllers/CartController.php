@@ -121,7 +121,7 @@ class CartController extends Controller
             $item = [
                 'id' => $product->id,
                 'name' => $product->title,
-                'price' => $sku['price'],
+                'price' => $sku['price'] ,
                 'qty' => request('qty'),
                 'options' => [
                     'sku_options' => $options,
@@ -129,7 +129,8 @@ class CartController extends Controller
                     'selected' => false,
                     'image' => !empty($imagePath) ? $imagePath : $this->imagy->getThumbnail($product->featured_images->first()->path, 'smallThumb'),
                     'slug' => '/product/' . $product->slug,
-                    'userId' => user()->id
+                    'userId' => user()->id,
+                    'index' => Cart::instance('cart')->count()+1
                 ]
             ];
 
@@ -175,7 +176,10 @@ class CartController extends Controller
         } else {
             Cart::instance('cart')->update($rawId,$qty);
             $this->updateDbcart();
-            return AjaxResponse::success('修改成功',$this->shopCart->getSelectedTotal());
+            return AjaxResponse::success('修改成功',[
+                'cart' => Cart::instance('cart')->content(),
+                'selectedTotal' => $this->shopCart->getSelectedTotal()
+            ]);
         }
     }
 
@@ -184,18 +188,23 @@ class CartController extends Controller
      * @param null $type
      * @return mixed
      */
-    public function updateStatus($rawId = null, $type=null)
+    public function updateStatus($rawId = null, $type=null )
     {
         $rawId = request('rowId');
-        $type = request('type');
+        $type =  request('type');
 
         $this->shopCart->compareSessionVsDb();
         $item = Cart::instance('cart')->get($rawId);
         $item->options['selected'] = $type;
         Cart::instance('cart')->update($rawId, ['options.selected' => $type]);
         $this->updateDbcart();
-        return AjaxResponse::success('修改成功',  Cart::instance('cart')->content()   );
+
+        return AjaxResponse::success('修改成功',[
+            'cart' => Cart::instance('cart')->content(),
+            'total' => $this->shopCart->getSelectedTotal()
+        ]);
     }
+
 
     //批量改状态 是否选中 并设置选中总价
 
@@ -205,11 +214,23 @@ class CartController extends Controller
     public function bulkUpdateStatus()
     {
         $contents = Cart::instance('cart')->content();
+
         foreach( $contents as $key=>$item ){
-            Cart::instance('cart')->update($item->rowId, ['options.selected' =>  request('data') !== 0  ]);
+
+            $rowId = $item->rowId;
+            $type = request('data') != 0;
+
+            $this->shopCart->compareSessionVsDb();
+            $item = Cart::instance('cart')->get($rowId);
+            $item->options['selected'] = $type;
+            Cart::instance('cart')->update($rowId, ['options.selected' => $type]);
+            $this->updateDbcart();
         }
-        $this->updateDbcart();
-        return AjaxResponse::success('修改成功');
+
+        return AjaxResponse::success('修改成功',[
+            'cart' => Cart::instance('cart')->content(),
+            'total' => $this->shopCart->getSelectedTotal()
+        ]);
     }
     //删除数据库
 
