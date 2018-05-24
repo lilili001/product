@@ -155,7 +155,10 @@ class CartController extends Controller
 
             $this->updateDbcart();
 
-            return AjaxResponse::success('添加成功',Cart::instance('cart')->content());
+            return AjaxResponse::success('添加成功',[
+                'cart' => Cart::instance('cart')->content(),
+                'total' => $this->shopCart->getSelectedTotal()
+            ]);
         }
     }
 
@@ -242,7 +245,12 @@ class CartController extends Controller
         $rawId = request('rawId');
         $bool = Cart::instance('cart')->remove($rawId);
         $this->updateDbcart();
-        return $bool ? AjaxResponse::success('修改成功') : AjaxResponse::fail('失败');
+        return $bool ? AjaxResponse::success('修改成功',
+            [
+                'cart' => Cart::instance('cart')->content(),
+                'total' => $this->shopCart->getSelectedTotal()
+            ]
+            ) : AjaxResponse::fail('失败');
     }
 
     //更新数据库cart
