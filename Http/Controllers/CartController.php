@@ -11,7 +11,7 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ShoppingCart;
 use Modules\Product\Repositories\ProductRepository;
 use AjaxResponse;
-
+use Mockery\Exception;
 use Modules\Product\Repositories\ShoppingCartRepository;
 use Modules\User\Entities\UserAddress;
 use Cart;
@@ -62,14 +62,24 @@ class CartController extends Controller
      */
     public function cart()
     {
+        $total = number_format($this->shopCart->getSelectedTotal(),2);
+        return view('cart',compact('total'));
+    }
+
+    public function cartItems(Request $request)
+    {
         $this->shopCart->compareSessionVsDb();
         $items = $this->shopCart->getCurrentUserCart();
 
         //total 是Cart计算出来的 不需要前台进行计算 前台直接显示值即可
-        $total = number_format($this->shopCart->getSelectedTotal(),2) * $this->rate;
-        return view('cart', compact('items','total'));
+        $total = number_format($this->shopCart->getSelectedTotal(),2);
+        if($request->ajax() || $request->expectsJson() ){
+            return AjaxResponse::success('',[
+                'cart' => $items,
+                'total' => $total
+            ]);
+        }
     }
-
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -152,11 +162,10 @@ class CartController extends Controller
                 Cart::instance('cart')->add($item);
                 Cart::instance('cart')->store(user()->id);
             }
-
             $this->updateDbcart();
-
+            $items = $this->shopCart->getCurrentUserCart();
             return AjaxResponse::success('添加成功',[
-                'cart' => Cart::instance('cart')->content(),
+                'cart' => $items,
                 'total' => $this->shopCart->getSelectedTotal()
             ]);
         }
@@ -179,9 +188,10 @@ class CartController extends Controller
         } else {
             Cart::instance('cart')->update($rawId,$qty);
             $this->updateDbcart();
+            $items = $this->shopCart->getCurrentUserCart();
             return AjaxResponse::success('修改成功',[
-                'cart' => Cart::instance('cart')->content(),
-                'selectedTotal' => $this->shopCart->getSelectedTotal()
+                'cart' => $items,
+                'total' => $this->shopCart->getSelectedTotal()
             ]);
         }
     }
@@ -201,9 +211,9 @@ class CartController extends Controller
         $item->options['selected'] = $type;
         Cart::instance('cart')->update($rawId, ['options.selected' => $type]);
         $this->updateDbcart();
-
+        $items = $this->shopCart->getCurrentUserCart();
         return AjaxResponse::success('修改成功',[
-            'cart' => Cart::instance('cart')->content(),
+            'cart' => $items,
             'total' => $this->shopCart->getSelectedTotal()
         ]);
     }
@@ -229,9 +239,9 @@ class CartController extends Controller
             Cart::instance('cart')->update($rowId, ['options.selected' => $type]);
             $this->updateDbcart();
         }
-
+        $items = $this->shopCart->getCurrentUserCart();
         return AjaxResponse::success('修改成功',[
-            'cart' => Cart::instance('cart')->content(),
+            'cart' => $items,
             'total' => $this->shopCart->getSelectedTotal()
         ]);
     }
@@ -242,19 +252,23 @@ class CartController extends Controller
      */
     public function deleteCartItem()
     {
+
         $rawId = request('rawId');
-        $bool = Cart::instance('cart')->remove($rawId);
-        $this->updateDbcart();
-        return $bool ? AjaxResponse::success('修改成功',
-            [
-                'cart' => Cart::instance('cart')->content(),
-                'total' => $this->shopCart->getSelectedTotal()
-            ]
-            ) : AjaxResponse::fail('失败');
+        try{
+            Cart::instance('cart')->remove($rawId);
+            $this->updateDbcart();
+            $items = $this->shopCart->getCurrentUserCart();
+        }catch ( Exception $e  ){
+            return  AjaxResponse::fail('',$e->getMessage()) ;
+        }
+        return AjaxResponse::success('修改成功',
+        [
+            'cart' => $items,
+            'total' => $this->shopCart->getSelectedTotal()
+        ]);
     }
 
     //更新数据库cart
-
     /**
      * @param array $dataToUpdateDatabase
      */

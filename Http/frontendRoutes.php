@@ -26,6 +26,12 @@ $router->group([], function (Router $router) {
         'as' => $locale . '.getPrice',
     ]);
 
+    $router->post('cartItems',[
+        'uses' => 'CartController@cartItems',
+        'as' =>  'cart.cartItems',
+        'middleware' => 'logged.in'
+    ]);
+
     $router->post('{product}/addToCart', [
         'uses' => 'CartController@addToCart',
         'as' => $locale . '.addToCart',

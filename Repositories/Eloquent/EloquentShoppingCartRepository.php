@@ -25,7 +25,7 @@ class EloquentShoppingCartRepository extends EloquentBaseRepository implements S
         $total = 0;
         $instance = Cart::instance('cart')->content();
         foreach($instance as $key=>$item){
-            if($item->options['selected']){
+            if($item->options['selected'] && $item->options['userId'] == user()->id ){
                 $total += (float) ($item->price) * ($item->qty) ;
             }
         }
