@@ -8,6 +8,7 @@ use Modules\Product\Entities\Attrset;
 use Modules\Product\Entities\Product;
 use Modules\Product\Repositories\CategoryRepository;
 use Modules\Product\Repositories\ProductRepository;
+use Modules\Sale\Entities\OrderReview;
 use ShoppingCart;
 
 class PublicController extends BasePublicController
@@ -41,7 +42,11 @@ class PublicController extends BasePublicController
     public function productDetail($slug)
     {
         $product = $this->product->findBySlug($slug);
-        return view('product.index', compact('product'));
+        $reviews = OrderReview::where([
+            'goods_id' => $product->id
+        ])->with('replies')->get()->toArray();
+        //dd( $reviews );
+        return view('product.index', compact('product','reviews'));
     }
 
     public function search()

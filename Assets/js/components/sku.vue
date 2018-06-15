@@ -1,6 +1,5 @@
 <template>
     <div class="mar-t14">
-        sdfsdf
         <div v-for="(item,key ) in skuAttrs">
             <span>{{item.name}}:</span>
             <input type="hidden" :name="item['key']" v-model="checkList[item['key']]" required>

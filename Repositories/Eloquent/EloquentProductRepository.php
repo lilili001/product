@@ -79,6 +79,7 @@ class EloquentProductRepository extends EloquentBaseRepository implements Produc
         event(new ProductWasDeleted($product));
         return DB::transaction(function () use ($product) {
             try {
+                $product->translations()->delete();
                 $product->attr()->delete();
                 $product->sku()->delete();
                 $product->delete();

@@ -152,7 +152,7 @@ class CartController extends Controller
                 'instance'   => 'cart'
             ])->first();
 
-            if( in_array( 'cart' ,  $instances ) ){
+            if( !empty($cartInstance) && in_array( 'cart' ,  $instances ) ){
                 //首先将数据库的 cart instance 赋值给session
                 $content = $cartInstance->content;
                 session('cart.cart', unserialize($content));
