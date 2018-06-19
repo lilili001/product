@@ -7,10 +7,12 @@ use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Modules\Media\Support\Traits\MediaRelation;
+use Overtrue\LaravelFollow\Traits\CanBeFavorited;
+use Overtrue\LaravelFollow\Traits\CanBeLiked;
 
 class Product extends Model
 {
-    use Translatable,MediaRelation,Searchable,EsSearchable;
+    use Translatable,MediaRelation,Searchable,EsSearchable,CanBeFavorited,CanBeLiked;
 
     protected $table = 'product__products';
     public $translatedAttributes = ['title','keywords','meta_description','description','slug'];

@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Product\Entities\Attr;
 use Modules\Product\Entities\Attrset;
@@ -10,6 +11,7 @@ use Modules\Product\Repositories\CategoryRepository;
 use Modules\Product\Repositories\ProductRepository;
 use Modules\Sale\Entities\OrderReview;
 use ShoppingCart;
+use AjaxResponse;
 
 class PublicController extends BasePublicController
 {
@@ -44,9 +46,10 @@ class PublicController extends BasePublicController
         $product = $this->product->findBySlug($slug);
         $reviews = OrderReview::where([
             'goods_id' => $product->id
-        ])->with('replies')->get()->toArray();
-        //dd( $reviews );
-        return view('product.index', compact('product','reviews'));
+        ])->with('replies')->get();
+
+        $favorite_count = count( $product->favoriters()->get() );
+        return view('product.index', compact('product','reviews','favorite_count'));
     }
 
     public function search()
@@ -56,5 +59,15 @@ class PublicController extends BasePublicController
         return view('category.search', compact('products'));
     }
 
+    public function addToFavorite(Request $request)
+    {
+        try{
+            $product = Product::find($request->get('id'));
+            $res = user()->toggleFavorite($product);
+        }catch (Exception $e){
+            return AjaxResponse::fail('',$e->getMessage());
+        }
+        return  AjaxResponse::success('',$res);
+    }
 
 }

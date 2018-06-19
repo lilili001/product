@@ -80,6 +80,12 @@ $router->group([], function (Router $router) {
         'middleware' => 'logged.in'
     ]);
 
+    //加入收藏夹 取消收藏夹
+    $router->post('addFavoriate',[
+        'as' =>'product.addToFavorite',
+        'uses' => 'PublicController@addToFavorite',
+        'middleware' => 'logged.in'
+    ]);
 });
 
 $router->group(['prefix'=>'elastic'],function(Router $router){
