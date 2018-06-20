@@ -7,6 +7,7 @@ use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Modules\Media\Support\Traits\MediaRelation;
+use Modules\Sale\Entities\OrderRefund;
 use Overtrue\LaravelFollow\Traits\CanBeFavorited;
 use Overtrue\LaravelFollow\Traits\CanBeLiked;
 
@@ -42,6 +43,4 @@ class Product extends Model
     {
         return $this->filesByZone('gallery')->get();
     }
-
-
 }
