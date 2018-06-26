@@ -69,5 +69,4 @@ class PublicController extends BasePublicController
         }
         return  AjaxResponse::success('',$res);
     }
-
 }
