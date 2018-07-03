@@ -48,8 +48,19 @@ class PublicController extends BasePublicController
             'goods_id' => $product->id
         ])->with('replies')->get();
 
+        $cat = $product->cats->toArray();
+        $cat = $cat[0]['id'];
+        //related products
+
+        $relatedProducts = Product::with(['cats'=>function($q)use($cat){
+            $q->where('category_id' , $cat);
+        }])->inRandomOrder()
+            ->take(5)
+            ->get();
+
         $favorite_count = count( $product->favoriters()->get() );
-        return view('product.index', compact('product','reviews','favorite_count'));
+
+        return view('product.index', compact('product','reviews','favorite_count' ,'relatedProducts' ));
     }
 
     public function search()

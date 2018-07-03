@@ -68,6 +68,13 @@
                                 <?php endforeach; ?>
                             </select>
                             @endif
+
+                            {!! Form::label("is featured", 'Is Featured:') !!}
+                            <select name="is_featured" id="is_featured" class="form-control">
+                                <option value="">请选择</option>
+                                <option value="1" {{ $product->is_featured ? 'selected' : ''  }}>是</option>
+                                <option value="0" {{ !$product->is_featured ? 'selected' : ''  }}>否</option>
+                            </select>
                         </div>
                         </div>
                         {{--main content end--}}
@@ -109,6 +116,7 @@
 @stop
 
 @push('js-stack')
+
 <script src="{{mix('js/lib.js')}}"></script>
     <script type="text/javascript">
         $( document ).ready(function() {

@@ -29,6 +29,7 @@
                         <table class="data-table table table-bordered table-hover">
                             <thead>
                             <tr>
+                                <th>  序号  </th>
                                 <th>{{ trans('product::products.table.attrset') }}</th>
                                 <th>{{ trans('product::products.table.productname') }}</th>
                                 <th>{{ trans('product::products.table.price') }}</th>
@@ -40,8 +41,9 @@
                             </thead>
                             <tbody>
                             <?php if (isset($products)): ?>
-                            <?php foreach ($products as $product): ?>
+                            <?php foreach ($products as $key=> $product): ?>
                             <tr>
+                                <td>{{ $key+1   }}</td>
                                 <td>{{ $product->attrset_id }}</td>
                                 <td>{{ $product->title }}</td>
                                 <td>{{ $product->price }}</td>
@@ -110,7 +112,7 @@
                 "sort": true,
                 "info": true,
                 "autoWidth": true,
-                "order": [[ 0, "desc" ]],
+                "order": [[ 6, "desc" ]],
                 "language": {
                     "url": '<?php echo Module::asset("core:js/vendor/datatables/{$locale}.json") ?>'
                 }

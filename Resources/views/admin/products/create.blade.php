@@ -53,6 +53,14 @@
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         <?php endforeach; ?>
                     </select>
+
+                    {!! Form::label("is featured", 'Is Featured:') !!}
+                    <select name="is_featured" id="is_featured" class="form-control">
+                        <option value="">请选择</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+
                 </div>
             </div>
         </div>
@@ -95,7 +103,8 @@
 @stop
 
 @push('js-stack')
-<script src="{{mix('js/lib.js')}}"></script>
+
+    <script src="{{mix('js/lib.js')}}"></script>
     <script type="text/javascript">
         $( document ).ready(function() {
             $(document).keypressAction({
