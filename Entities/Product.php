@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Modules\Media\Support\Traits\MediaRelation;
 use Modules\Sale\Entities\OrderRefund;
+use Modules\Supplier\Entities\Supplier;
 use Overtrue\LaravelFollow\Traits\CanBeFavorited;
 use Overtrue\LaravelFollow\Traits\CanBeLiked;
 
@@ -18,7 +19,7 @@ class Product extends Model
     protected $table = 'product__products';
     public $translatedAttributes = ['title','keywords','meta_description','description','slug'];
     protected $fillable = ['attrset_id', 'is_featured', 'status','sort_order','price','stock','slug',
-        'title','keywords','meta_description','description','swatch_colors'];
+        'title','keywords','meta_description','description','swatch_colors' ,'supplier_id' , 'supplier_price' ];
 
     public function sku()
     {
@@ -42,5 +43,10 @@ class Product extends Model
     public function getFeaturedImagesAttribute()
     {
         return $this->filesByZone('gallery')->get();
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 }

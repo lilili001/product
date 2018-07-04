@@ -8,7 +8,9 @@ class UpdateProductRequest extends BaseFormRequest
 {
     public function rules()
     {
-        return [];
+        return [
+            'slug' => 'unique'
+        ];
     }
 
     public function translationRules()

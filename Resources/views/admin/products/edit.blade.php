@@ -23,8 +23,9 @@
             <li><a href="#images" data-toggle="tab">图片信息</a></li>
             <li><a href="#sku" data-toggle="tab">sku属性</a></li>
             <li><a href="#attr" data-toggle="tab">销售属性</a></li>
+            <li><a href="#supplier" data-toggle="tab">供应商</a></li>
         </ul>
-        <a href="{{route('admin.product.product.index')}}"><button class="button btn-primary pull-right">返回列表</button></a>
+
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade in active" id="base">
                 <div class="col-md-12" style="margin-top: 20px;">
@@ -94,6 +95,9 @@
                       fillsale="{{json_encode( $product->attr()->where('is_for_sku',false)->get()->toArray() )}}"
                       product="{{$product}}"
                       locale="{{locale()}}"></attr>
+            </div>
+            <div class="tab-pane fade" id="supplier">
+                @include('product::admin.products.partials.supplier')
             </div>
         </div>
 

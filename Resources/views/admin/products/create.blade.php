@@ -23,6 +23,7 @@
         <li><a href="#images" data-toggle="tab">图片信息</a></li>
         <li><a href="#sku" data-toggle="tab">sku属性</a></li>
         <li><a href="#attr" data-toggle="tab">销售属性</a></li>
+        <li><a href="#supplier" data-toggle="tab">供应商</a></li>
     </ul>
     <div id="myTabContent" class="tab-content">
         {{--base tab content--}}
@@ -72,15 +73,15 @@
         </div>
         {{--sku tab content--}}
         <div class="tab-pane fade" id="sku">
-            <sku
-                 locale="{{locale()}}"
-                  >
-            </sku>
+            <sku locale="{{locale()}}"></sku>
         </div>
         {{--attr tab content--}}
         <div class="tab-pane fade" id="attr">
-        <attr attrsets="{{ json_encode($attrsets)}}"
-                  locale="{{locale()}}"></attr>
+        <attr attrsets="{{ json_encode($attrsets) }}"
+             locale="{{locale()}}"></attr>
+        </div>
+        <div class="tab-pane fade" id="supplier">
+            @include('product::admin.products.partials.supplier')
         </div>
     </div>
 

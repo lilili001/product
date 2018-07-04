@@ -26,6 +26,7 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
+
                         <table class="data-table table table-bordered table-hover">
                             <thead>
                             <tr>
@@ -34,6 +35,7 @@
                                 <th>{{ trans('product::products.table.productname') }}</th>
                                 <th>{{ trans('product::products.table.price') }}</th>
                                 <th>{{ trans('product::products.table.stock') }}</th>
+                                <th>{{ trans('supplier::suppliers.form.supplier name') }}</th>
                                 <th>{{ trans('product::products.table.status') }}</th>
                                 <th>{{ trans('core::core.table.created at') }}</th>
                                 <th data-sortable="false">{{ trans('core::core.table.actions') }}</th>
@@ -42,12 +44,14 @@
                             <tbody>
                             <?php if (isset($products)): ?>
                             <?php foreach ($products as $key=> $product): ?>
+
                             <tr>
                                 <td>{{ $key+1   }}</td>
                                 <td>{{ $product->attrset_id }}</td>
                                 <td>{{ $product->title }}</td>
                                 <td>{{ $product->price }}</td>
                                 <td>{{ $product->stock }}</td>
+                                <td><a href="{{route('admin.supplier.supplier.index')}}"> {{ !empty($product->supplier) ? $product->supplier->supplier_name : '' }}</a> </td>
                                 <td>{{ $product->status }}</td>
                                 <td>
                                     <a href="{{ route('admin.product.product.edit', [$product->id]) }}">
@@ -56,8 +60,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="{{ route('admin.product.product.edit', [$product->id]) }}" class="btn btn-default btn-flat"><i class="fa fa-pencil"></i></a>
-                                        <button class="btn btn-danger btn-flat" data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.product.product.destroy', [$product->id]) }}"><i class="fa fa-trash"></i></button>
+                                        <a href="{{ route('admin.product.product.edit', [$product->id]) }}"  >编辑</a>
+                                        <a  data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.product.product.destroy', [$product->id]) }}">删除</a>
                                     </div>
                                 </td>
                             </tr>
