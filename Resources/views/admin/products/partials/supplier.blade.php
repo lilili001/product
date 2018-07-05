@@ -5,7 +5,7 @@
         <select name="supplier_id" class="form-control" id="" >
             <option value="">请选择</option>
             @foreach($suppliers as $supplier)
-                <option value="{{$supplier->id}}" {{ isset($product) && $supplier->id == $product->supplier->id ? 'selected' : ''  }}>{{$supplier->supplier_name}}</option>
+                <option value="{{$supplier->id}}" {{ isset($product->supplier) && $supplier->id == $product->supplier->id ? 'selected' : ''  }}>{{$supplier->supplier_name}}</option>
             @endforeach
         </select>
         </div>

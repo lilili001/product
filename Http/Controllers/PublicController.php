@@ -66,8 +66,8 @@ class PublicController extends BasePublicController
     public function search()
     {
         $query = request('q');
-        $products = Product::search($query)->paginate(24);
-        dd($products);
+        $products = Product::search($query )->paginate(24);
+
         return view('category.search', compact('products'));
     }
 

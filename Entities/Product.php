@@ -49,4 +49,9 @@ class Product extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function toSearchableArray()
+    {
+        return array_only($this->toArray(), [ 'translations'   ]);
+    }
 }
