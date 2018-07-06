@@ -9,13 +9,19 @@ class UpdateProductRequest extends BaseFormRequest
     public function rules()
     {
         return [
-            'slug' => 'unique'
+            'attrset_id' => 'required',
+            'category_id' => 'required',
+            'price' => 'required'
         ];
     }
 
     public function translationRules()
     {
-        return [];
+        $id = $this->route()->parameter('product')->id;
+        return [
+            'title' => 'required',
+            'slug' =>  "required|unique:product__product_translations,slug,$id,product_id,locale,$this->localeKey"
+        ];
     }
 
     public function authorize()

@@ -12,9 +12,16 @@
     </div>
 
     <div class="form-group mar-t10">
+        <label class="col-sm-2" for="">供应商商品url</label>
+        <div class="col-sm-10">
+            <input type="text" value="{{ isset( $product->supplier_product_url ) ? $product->supplier_product_url : ''  }}" name="supplier_price" class="form-control" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-group mar-t10">
         <label class="col-sm-2" for="">供应商价格(rmb)</label>
         <div class="col-sm-10">
-        <input type="text" value="{{$product->supplier_price}}" name="supplier_price" class="form-control" placeholder="">
+        <input type="text" value="{{ isset( $product->supplier_price ) ? $product->supplier_price : ''  }}" name="supplier_price" class="form-control" placeholder="">
         </div>
     </div>
 </div>

@@ -185,6 +185,13 @@
             if (!this.pdc) return;
 
             //if(this.skuAttrs.length==0) return;
+            const loading = this.$loading({
+                lock: true,
+                //text: 'Loading',
+                //spinner: 'el-icon-loading',
+                //background: 'rgba(0, 0, 0, 0.7)'
+            });
+
             var timer = setTimeout(() => {
                 this.tableData6 = this.fillDataSku.map((item) => {
                     return item.settings;
@@ -196,8 +203,9 @@
                 if (!!this.result && this.tableData6.length > 0) {
                     this.createTableAndMerge();
                 }
+                loading.close();
                 clearInterval(timer);
-            }, 1000);
+            }, 2000);
         },
         methods: {
             getAllImages(){

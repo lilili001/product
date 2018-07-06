@@ -30,6 +30,7 @@
         <div class="tab-pane fade in active" id="base">
             <div class="row mar-t20">
                 <div class="col-md-10">
+
                     <div class="nav-tabs-custom">
                         @include('partials.form-tab-headers')
                         <div class="tab-content">
@@ -45,15 +46,22 @@
                     </div> {{-- end nav-tabs-custom --}}
                 </div>
                 <div class="col-md-2">
-                    {!! Form::label("attrset", 'attrset:') !!}
-                    <attrset attrsets="{{json_encode($attrsets)}}"></attrset>
-                    {!! Form::label("category", 'category:') !!}
-                    <select name="category_id" id="category_id" class="form-control">
-                        <option value="">请选择</option>
-                        <?php foreach ($cats as $cat): ?>
-                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="form-group{{ $errors->has("attrset_id") ? ' has-error' : '' }}">
+                        {!! Form::label("attrset", 'attrset:') !!}
+                        <attrset attrsets="{{json_encode($attrsets)}}"></attrset>
+                        {!! $errors->first("attrset_id", '<span class="help-block">:message</span>') !!}
+                    </div>
+
+                    <div class="form-group{{ $errors->has("category_id") ? ' has-error' : '' }}">
+                        {!! Form::label("category", 'category:') !!}
+                        <select name="category_id" id="category_id" class="form-control">
+                            <option value="">请选择</option>
+                            <?php foreach ($cats as $cat): ?>
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            <?php endforeach; ?>
+                        </select>
+                        {!! $errors->first("category_id", '<span class="help-block">:message</span>') !!}
+                    </div>
 
                     {!! Form::label("is featured", 'Is Featured:') !!}
                     <select name="is_featured" id="is_featured" class="form-control">

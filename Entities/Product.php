@@ -18,7 +18,7 @@ class Product extends Model
 
     protected $table = 'product__products';
     public $translatedAttributes = ['title','keywords','meta_description','description','slug'];
-    protected $fillable = ['attrset_id', 'is_featured', 'status','sort_order','price','stock','slug',
+    protected $fillable = ['attrset_id', 'is_featured', 'status','sort_order','price','stock','slug','supplier_product_url',
         'title','keywords','meta_description','description','swatch_colors' ,'supplier_id' , 'supplier_price' ];
 
     public function sku()

@@ -12,6 +12,7 @@
 @stop
 
 @section('content')
+
     <el-card>
         {!! Form::open(['route' => ['admin.product.product.update', $product->id], 'method' => 'put','novalidate'=>"true"]) !!}
         <ul id="myTab" class="nav nav-tabs">
@@ -50,6 +51,8 @@
                             </div>
 
                         <div class="col-md-2">
+
+                            <div class="form-group{{ $errors->has("attrset_id") ? ' has-error' : '' }}">
                             {!! Form::label("attrset", 'attrset:') !!}
                             <!-- <select name="attrset_id" id="attrset_id" class="form-control" disabled>
                                 <option value="">请选择</option>
@@ -57,18 +60,22 @@
                                 <option value="{{ $set->id }}" {{ $set->id == $product->attrset_id ? 'selected' : ''  }}>{{ $set->name }}</option>
                                 <?php endforeach; ?>
                             </select> -->
+                                <attrset attrsets="{{json_encode($attrsets)}}" attrset-id="{{$product->attrset_id}}"></attrset>
+                                {!! $errors->first("attrset_id", '<span class="help-block">:message</span>') !!}
+                            </div>
 
-                            <attrset attrsets="{{json_encode($attrsets)}}" attrset-id="{{$product->attrset_id}}"></attrset>
-
-                            {!! Form::label("category", 'category:') !!}
-                            @if( !empty($cats)  )
-                            <select name="category_id" id="category_id" class="form-control">
-                                <option value="">请选择</option>
-                                <?php foreach ($cats as $cat): ?>
-                                <option value="{{ $cat->id }}" {{ !empty($product->cats->toArray()) && $cat->id == $product->cats->toArray()[0]['id'] ? 'selected' : ''  }}>{{ $cat->name }}</option>
-                                <?php endforeach; ?>
-                            </select>
-                            @endif
+                            <div class="form-group{{ $errors->has("category_id") ? ' has-error' : '' }}">
+                                {!! Form::label("category", 'category:') !!}
+                                @if( !empty($cats)  )
+                                <select name="category_id" id="category_id" class="form-control">
+                                    <option value="">请选择</option>
+                                    <?php foreach ($cats as $cat): ?>
+                                    <option value="{{ $cat->id }}" {{ !empty($product->cats->toArray()) && $cat->id == $product->cats->toArray()[0]['id'] ? 'selected' : ''  }}>{{ $cat->name }}</option>
+                                    <?php endforeach; ?>
+                                </select>
+                                @endif
+                                {!! $errors->first("category_id", '<span class="help-block">:message</span>') !!}
+                            </div>
 
                             {!! Form::label("is featured", 'Is Featured:') !!}
                             <select name="is_featured" id="is_featured" class="form-control">
