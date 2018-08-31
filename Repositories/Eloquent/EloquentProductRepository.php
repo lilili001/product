@@ -114,7 +114,8 @@ class EloquentProductRepository extends EloquentBaseRepository implements Produc
         //更新product price和stock
         $product->update([
             'price' => $data['price'],
-            'stock' => $data['stock']
+            'stock' => $data['stock'],
+            'size_obj' => $data['size_obj']
         ]);
 
         //获取sku options列表

@@ -2,6 +2,7 @@
 
 return [
     'list resource' => 'List skus',
+    'list resource123' => 'List skus123',
     'create resource' => 'Create skus',
     'edit resource' => 'Edit skus',
     'destroy resource' => 'Destroy skus',
@@ -20,5 +21,5 @@ return [
     'messages' => [
     ],
     'validation' => [
-    ],
+    ]
 ];

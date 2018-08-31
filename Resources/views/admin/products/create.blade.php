@@ -14,20 +14,9 @@
 @section('content')
     {!! Form::open(['route' => ['admin.product.product.store'], 'method' => 'post']) !!}
     <el-card>
-    <ul id="myTab" class="nav nav-tabs">
-        <li class="active">
-            <a href="#base" data-toggle="tab">
-                基础信息
-            </a>
-        </li>
-        <li><a href="#images" data-toggle="tab">图片信息</a></li>
-        <li><a href="#sku" data-toggle="tab">sku属性</a></li>
-        <li><a href="#attr" data-toggle="tab">销售属性</a></li>
-        <li><a href="#supplier" data-toggle="tab">供应商</a></li>
-    </ul>
-    <div id="myTabContent" class="tab-content">
+
         {{--base tab content--}}
-        <div class="tab-pane fade in active" id="base">
+        <div id="base">
             <div class="row mar-t20">
                 <div class="col-md-10">
 
@@ -44,11 +33,21 @@
                         </div>
                         {{--@mediaSingle('profile_image')--}}
                     </div> {{-- end nav-tabs-custom --}}
+
+
+                    <hr>
+                    <attr attrsets="{{ json_encode($attrsets) }}" locale="{{locale()}}"></attr>
+                    <sku locale="{{locale()}}"></sku>
+                    <hr>
+                    @mediaMultiple('gallery')
+                    <hr>
+                    @include('product::admin.products.partials.supplier')
+
                 </div>
                 <div class="col-md-2">
                     <div class="form-group{{ $errors->has("attrset_id") ? ' has-error' : '' }}">
                         {!! Form::label("attrset", 'attrset:') !!}
-                        <attrset attrsets="{{json_encode($attrsets)}}"></attrset>
+                        <attrset attrsets="{{json_encode($attrsets)}}" attrset-id="{{$attrset}}"></attrset>
                         {!! $errors->first("attrset_id", '<span class="help-block">:message</span>') !!}
                     </div>
 
@@ -74,29 +73,11 @@
             </div>
         </div>
         {{--image tab content--}}
-        <div class="tab-pane fade" id="images">
-            <div class="mar-t20">
-                @mediaMultiple('gallery')
-            </div>
-        </div>
-        {{--sku tab content--}}
-        <div class="tab-pane fade" id="sku">
-            <sku locale="{{locale()}}"></sku>
-        </div>
-        {{--attr tab content--}}
-        <div class="tab-pane fade" id="attr">
-        <attr attrsets="{{ json_encode($attrsets) }}"
-             locale="{{locale()}}"></attr>
-        </div>
-        <div class="tab-pane fade" id="supplier">
-            @include('product::admin.products.partials.supplier')
-        </div>
-    </div>
 
-    <div class="box-footer">
-        <button type="submit" class="btn btn-primary btn-flat">{{ trans('core::core.button.create') }}</button>
-        <a class="btn btn-danger btn-flat" href="{{ route('admin.product.product.index')}}"><i class="fa fa-times"></i> {{ trans('core::core.button.cancel') }}</a>
-    </div>
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary btn-flat">{{ trans('core::core.button.create') }}</button>
+            <a class="btn btn-danger btn-flat" href="{{ route('admin.product.product.index')}}"><i class="fa fa-times"></i> {{ trans('core::core.button.cancel') }}</a>
+        </div>
     </el-card>
     {!! Form::close() !!}
 @stop

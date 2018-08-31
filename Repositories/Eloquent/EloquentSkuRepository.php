@@ -12,6 +12,7 @@ class EloquentSkuRepository extends EloquentBaseRepository implements SkuReposit
 {
     public function create($data)
     {
+        info('sku repository');
         return DB::transaction(function()use ($data){
            try{
 
@@ -23,7 +24,8 @@ class EloquentSkuRepository extends EloquentBaseRepository implements SkuReposit
                //更新product price和stock
                $product->update([
                    'price' => $data['price'],
-                   'stock' => $data['stock']
+                   'stock' => $data['stock'],
+                   'size_obj' => $data['size_obj']
                ]);
 
                //获取sku options列表

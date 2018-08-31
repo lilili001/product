@@ -1,6 +1,6 @@
 <template>
     <div style="">
-        <select name="attrset_id" id="attrset_id" v-model="setId" @change="fnChange"  class="form-control">
+        <select readonly name="attrset_id" id="attrset_id" v-model="setId" @change="fnChange"  class="form-control">
             <option value="">请选择</option>
             <option v-for="set in attrsetsObj" :key="set.id" :value="set.id">{{set.name}}</option>
         </select>

@@ -12,15 +12,10 @@
 @stop
 
 @section('content')
-
     <el-card>
         {!! Form::open(['route' => ['admin.product.product.update', $product->id], 'method' => 'put','novalidate'=>"true"]) !!}
         <ul id="myTab" class="nav nav-tabs">
-            <li class="active">
-                <a href="#base" data-toggle="tab">
-                    基础信息
-                </a>
-            </li>
+            <li class="active"><a href="#base" data-toggle="tab">基础信息</a></li>
             <li><a href="#images" data-toggle="tab">图片信息</a></li>
             <li><a href="#sku" data-toggle="tab">sku属性</a></li>
             <li><a href="#attr" data-toggle="tab">销售属性</a></li>
@@ -31,12 +26,10 @@
             <div class="tab-pane fade in active" id="base">
                 <div class="col-md-12" style="margin-top: 20px;">
                         {{--main content start--}}
-
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="nav-tabs-custom">
                                     @include('partials.form-tab-headers')
-
                                     <div class="tab-content">
                                         <?php $i = 0; ?>
                                         @foreach (LaravelLocalization::getSupportedLocales() as $locale => $language)
@@ -51,7 +44,6 @@
                             </div>
 
                         <div class="col-md-2">
-
                             <div class="form-group{{ $errors->has("attrset_id") ? ' has-error' : '' }}">
                             {!! Form::label("attrset", 'attrset:') !!}
                             <!-- <select name="attrset_id" id="attrset_id" class="form-control" disabled>

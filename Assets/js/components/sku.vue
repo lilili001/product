@@ -1,44 +1,96 @@
 <template>
     <div class="mar-t14">
-        <div v-for="(item,key ) in skuAttrs">
-            <span>{{item.name}}:</span>
-            <input type="hidden" :name="item['key']" v-model="checkList[item['key']]" required>
-            <el-checkbox-group v-model="checkList[item['key']]" @change="labelChange">
-                <el-checkbox :label="key1" :key="key1" v-for="(option,key1) in item.options">{{option[locale] }}
-                    <el-button
-                            class="custom_button_nopadding"
-                            size="mini"
-                            plain
-                            @click.stop="fnUploadSwatch(key1)"
-                            v-if="!!checkList['color'] && checkList['color'].indexOf(key1)!=-1 &&  !!swatchColor[key1]">
-                        <img
-                                width="30"
-                                height="30"
-                                :src="!!swatchColor[key1] &&!!swatchColor[key1]['filepath'] ? swatchColor[key1]['filepath'] : '' "
-                                alt=""
-                                class="swatch">
-                    </el-button>
+        <div class="info color999">价格设置需与系统默认货币一致</div>
+        <el-row class="mar-t20">
+            <el-col :span="2">sku规格</el-col>
+            <el-col :span="22">
+                <div class="sku-wrap">
+                    <div v-for="(item,key ) in skuAttrs">
+                        <span>{{item.name}}:</span>
+                        <input type="hidden" :name="item['key']" v-model="checkList[item['key']]" required>
+                        <el-checkbox-group v-model="checkList[item['key']]" @change="labelChange(item['key'])">
+                            <el-checkbox :label="key1" :key="key1" v-for="(option,key1) in item.options">{{option[locale] }}
+                                <el-button
+                                        class="custom_button_nopadding"
+                                        size="mini"
+                                        plain
+                                        @click.stop="fnUploadSwatch(key1)"
+                                        v-if="!!checkList['color'] && checkList['color'].indexOf(key1)!=-1 &&  !!swatchColor[key1]">
+                                    <img
+                                            width="30"
+                                            height="30"
+                                            :src="!!swatchColor[key1] &&!!swatchColor[key1]['filepath'] ? swatchColor[key1]['filepath'] : '' "
+                                            alt=""
+                                            class="swatch">
+                                </el-button>
 
-                    <el-button
-                            @click.stop="fnUploadSwatch(key1)"
-                            v-show="item['key']=='color' &&  indexofArr(checkList[item['key']],key1) !== -1 &&    !swatchColor[key1]"
-                            size="mini">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-                </el-checkbox>
-            </el-checkbox-group>
-        </div>
+                                <el-button
+                                        @click.stop="fnUploadSwatch(key1)"
+                                        v-show="item['key']=='color' &&  indexofArr(checkList[item['key']],key1) !== -1 &&    !swatchColor[key1]"
+                                        size="mini">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+                            </el-checkbox>
+                        </el-checkbox-group>
+                    </div>
 
-        <div id="createTable" v-show="tableData6.length>0"
-             class="el-table el-table--fit el-table--border el-table--enable-row-hover el-table--enable-row-transition"></div>
-        <el-row class="mar-t20 mar-b14">
-            <div class="grid-content">price:
-                <el-input v-model="price" class="w300" size="small" clearable></el-input>
-                <input type="hidden" required number="true" name="price" v-model="price"/></div>
+                    <div id="createTable" v-show="tableData6.length>0"
+                         class="el-table el-table--fit el-table--border el-table--enable-row-hover el-table--enable-row-transition"></div>
+
+                    <el-row class="mar-t20 mar-b14" v-show="show_size_obj">
+                        <el-col :span="2">size chart</el-col>
+                        <el-col :span="22">
+                            <div class="grid-content">
+                                <el-input v-model="size_obj" class="w300" size="small" clearable></el-input>
+                                <input type="hidden" required number="true" name="size_obj" v-model="size_obj"/>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-col>
         </el-row>
+
+        <el-row class="mar-t20 mar-b14">
+            <el-col :span="2">price(USD)</el-col>
+            <el-col :span="22">
+                <div class="grid-content">
+                    <el-input v-model="price" class=" " size="small" clearable></el-input>
+                    <input type="hidden" required number="true" name="price" v-model="price"/>
+                </div>
+            </el-col>
+        </el-row>
+
+        <el-row class="mar-t20 mar-b14">
+            <el-col :span="2">特价(USD)</el-col>
+            <el-col :span="22">
+                <div class="grid-content">
+                    <el-input v-model="specialPrice" class="" size="small" clearable></el-input>
+                    <input type="hidden" required number="true" name="specialPrice" v-model="specialPrice"/>
+                </div>
+            </el-col>
+        </el-row>
+
+        <el-row class="mar-t20 mar-b14">
+            <el-col :span="2">特价时间</el-col>
+            <el-col :span="22">
+                <div class="grid-content">
+                    <el-date-picker
+                            v-model="date_special_price"
+                            type="daterange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期">
+                    </el-date-picker>
+                </div>
+            </el-col>
+        </el-row>
+
         <el-row>
-            <div class="grid-content">stock:
-                <el-input class="w300" v-model="stock" size="small" clearable></el-input>
-                <input type="hidden" required number="true" name="stock" v-model="stock"/>
-            </div>
+            <el-col :span="2">stock</el-col>
+            <el-col :span="22">
+                <div class="grid-content">
+                    <el-input class=" " v-model="stock" size="small" clearable></el-input>
+                    <input type="hidden" required number="true" name="stock" v-model="stock"/>
+                </div>
+            </el-col>
         </el-row>
 
         <el-dialog
@@ -73,6 +125,7 @@
         <input v-model="JSON.stringify(checkList)" name="skuData[checkList]" type="hidden"/>
 
         <input v-model="price" name="skuData[price]" type="hidden"/>
+        <input v-model="price" name="skuData[specialPrice]" type="hidden"/>
         <input v-model="stock" name="skuData[stock]" type="hidden"/>
 
     </div>
@@ -81,7 +134,6 @@
     ul {
         padding-left: 0
     }
-
     ul li {
         float: left;
         list-style: none;
@@ -92,10 +144,18 @@
         border: 1px solid #ddd;
         box-sizing: border-box;
     }
-
     .clearfix {
         clear: both;
         text-align: center;
+    }
+    .color999{
+        color:#999;
+    }
+    .sku-wrap{
+        padding:20px;
+        background:#f9f8f7;
+        border:1px solid #ddd;
+        width:800px;
     }
 </style>
 <style>
@@ -103,7 +163,6 @@
         margin-top: 20px;
         text-align: center
     }
-
     .custom_button_nopadding {
         padding: 0;
     }
@@ -120,7 +179,12 @@
                 diaMsg: '',
                 tableData6: [],
                 result: [],
+                show_size_obj:false,
+                size_obj:'',
                 price: '',
+                specialPrice:'',
+                date_special_price:'',
+                isFeatured: false,
                 stock: '',
                 curKey: 0,
                 pageData: {
@@ -149,7 +213,6 @@
                         checkList[item['attr_key']] = JSON.parse(val);
                     });
                 }
-
                 return checkList;
             },
             atrKeys: function () {
@@ -178,11 +241,17 @@
             },
             fillDataSku: function () {
                 return !!this.filledSku ? JSON.parse(this.filledSku) : null;
-            }
+            },
         },
         mounted(){
+            this.$message('货币均以系统设置【默认货币】为主,默认为美元');
             this.getAllImages();
             if (!this.pdc) return;
+
+            if((this.checkList.size).length > 0){
+                this.show_size_obj = true;
+                this.sizeObj = this.pdcObj.size_obj;
+            }
 
             //if(this.skuAttrs.length==0) return;
             const loading = this.$loading({
@@ -245,9 +314,19 @@
                 const table = $('table');
                 ( _.values(this.checkList) ).map((arr, i) => this.mergeCell(table, i));
             },
-            labelChange(){
+            labelChange(key){
+                var _this = this;
                 //this.tableData6 = [];
                 const arr1 = this.handleResult();
+
+                if( (this.checkList.size).length > 0 ){
+                    this.show_size_obj = true
+                }else{
+                    this.show_size_obj = false;
+                    this.size_obj = '';
+                }
+
+                //_this.show_size_obj = false;
                 if (this.checkEveryAttrSelected(arr1)) {
                     this.tableData6 = this.result.map(str => {
                             const item = {};
@@ -314,7 +393,7 @@
                     var obj1 = _.zipObject(readyKeys, newArr);
                     var curRow = _.find(this.tableData6,obj1);
 
-                    str2 += `<td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input price" required number="true" name="sku_row_price_${i}" name1="sku_row_price[]" value="${curRow.price}" /></div></td>
+                    str2 += `<td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input price" required number="true" name="sku_row_price_${i}" name1="sku_row_price[]" value="${curRow.price}" />(USD)</div></td>
                         <td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input" required number="true" name="sku_row_qty_${i}" name1="sku_row_qty[]" value="${curRow.stock}" /></div></td>`;
                     strBody += '<tr>' + str2 + '</tr>';
                 }

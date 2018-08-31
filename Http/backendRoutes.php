@@ -45,6 +45,12 @@ $router->group(['prefix' =>'/product'], function (Router $router) {
         'uses' => 'ProductController@index',
         'middleware' => 'can:product.products.index'
     ]);
+
+    $router->get('/selectAttrset', [
+        'as' => 'admin.product.product.selectAttrset',
+        'uses' => 'ProductController@selectAttrset',
+        'middleware' => 'can:product.products.create'
+    ]);
     $router->get('/create', [
         'as' => 'admin.product.product.create',
         'uses' => 'ProductController@create',
@@ -206,7 +212,6 @@ $router->group(['prefix' =>'/product'], function (Router $router) {
     // append
     Route::get('/search', function (\Modules\Product\Repositories\ProductRepository $repository) {
         $data = $repository->search(  (string) request('q')  );
-
         return $data;
     });
 });

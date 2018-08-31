@@ -39,16 +39,22 @@ class ProductController extends AdminBaseController
         return view('product::admin.products.index', compact('products'));
     }
 
+    public function selectAttrset()
+    {
+        $attrsets = $this->product->getAllAttrsets();
+        return view('product::admin.products.selectAttrset',compact('attrsets'));
+    }
     /**
      * Show the form for creating a new resource.
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $attrset = $request->get('attrset');
         $attrsets = $this->product->getAllAttrsets();
         $cats = $this->cat->getAllCats();
-        return view('product::admin.products.create',compact('attrsets','cats'));
+        return view('product::admin.products.create',compact('attrsets','cats','attrset' ));
     }
 
     /**
