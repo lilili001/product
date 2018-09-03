@@ -34,8 +34,6 @@
                         {{--@mediaSingle('profile_image')--}}
                     </div> {{-- end nav-tabs-custom --}}
 
-
-                    <hr>
                     <attr attrsets="{{ json_encode($attrsets) }}" locale="{{locale()}}"></attr>
                     <sku locale="{{locale()}}"></sku>
                     <hr>

@@ -1,5 +1,6 @@
 <template>
-    <div class="mar-t14">
+    <div class="mar-t14" v-show="skuAttrs.length > 0">
+        <hr>
         <div class="info color999">价格设置需与系统默认货币一致</div>
         <el-row class="mar-t20">
             <el-col :span="2">sku规格</el-col>
