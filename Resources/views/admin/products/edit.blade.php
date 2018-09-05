@@ -14,17 +14,10 @@
 @section('content')
     <el-card>
         {!! Form::open(['route' => ['admin.product.product.update', $product->id], 'method' => 'put','novalidate'=>"true"]) !!}
-        <ul id="myTab" class="nav nav-tabs">
-            <li class="active"><a href="#base" data-toggle="tab">基础信息</a></li>
-            <li><a href="#images" data-toggle="tab">图片信息</a></li>
-            <li><a href="#sku" data-toggle="tab">sku属性</a></li>
-            <li><a href="#attr" data-toggle="tab">销售属性</a></li>
-            <li><a href="#supplier" data-toggle="tab">供应商</a></li>
-        </ul>
 
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade in active" id="base">
-                <div class="col-md-12" style="margin-top: 20px;">
+
+
+         <div class="col-md-12" style="margin-top: 20px;">
                         {{--main content start--}}
                         <div class="row">
                             <div class="col-md-10">
@@ -41,6 +34,17 @@
                                             {{--@mediaSingle('profile_image', $product)--}}
                                     </div>
                                 </div> {{-- end nav-tabs-custom --}}
+
+                                <attr attrsets="{{ json_encode($attrsets)  }}"
+                                      fillsale="{{json_encode( $product->attr()->where('is_for_sku',false)->get()->toArray() )}}"
+                                      product="{{$product}}"
+                                      locale="{{locale()}}"></attr>
+                                @include('product::admin.products.partials.sku')
+                                <hr>
+                                @mediaMultiple('gallery',$product)
+                                <hr>
+                                @include('product::admin.products.partials.supplier')
+
                             </div>
 
                         <div class="col-md-2">
@@ -69,36 +73,29 @@
                                 {!! $errors->first("category_id", '<span class="help-block">:message</span>') !!}
                             </div>
 
-                            {!! Form::label("is featured", 'Is Featured:') !!}
-                            <select name="is_featured" id="is_featured" class="form-control">
-                                <option value="">请选择</option>
-                                <option value="1" {{ $product->is_featured ? 'selected' : ''  }}>是</option>
-                                <option value="0" {{ !$product->is_featured ? 'selected' : ''  }}>否</option>
-                            </select>
+                            <div class="form-group{{ $errors->has("is_featured") ? ' has-error' : '' }}">
+                                {!! Form::label("is featured", 'Is Featured:') !!}
+                                <select name="is_featured" id="is_featured" class="form-control">
+                                    <option value="">请选择</option>
+                                    <option value="1" {{ $product->is_featured ? 'selected' : ''  }}>是</option>
+                                    <option value="0" {{ !$product->is_featured ? 'selected' : ''  }}>否</option>
+                                </select>
+                                {!! $errors->first("is_featured", '<span class="help-block">:message</span>') !!}
+                            </div>
+
+                            <div class="form-group{{ $errors->has("status") ? ' has-error' : '' }}">
+                            {!! Form::label("Status", 'Status:') !!}
+                                <select name="status"  class="form-control">
+                                    <option value="">请选择</option>
+                                    <option {{ $product->status ? 'selected' : '' }} value="1">是</option>
+                                    <option {{ !$product->status ? 'selected' : '' }} value="0">否</option>
+                                </select>
+                                {!! $errors->first("status", '<span class="help-block">:message</span>') !!}
+                            </div>
                         </div>
                         </div>
                         {{--main content end--}}
                 </div>
-
-            </div>
-            <div class="tab-pane fade" id="images">
-                <div class="mar-t20">
-                    @mediaMultiple('gallery',$product)
-                </div>
-            </div>
-            <div class="tab-pane fade" id="sku">
-                 @include('product::admin.products.partials.sku')
-            </div>
-            <div class="tab-pane fade" id="attr">
-                <attr attrsets="{{ json_encode($attrsets)  }}"
-                      fillsale="{{json_encode( $product->attr()->where('is_for_sku',false)->get()->toArray() )}}"
-                      product="{{$product}}"
-                      locale="{{locale()}}"></attr>
-            </div>
-            <div class="tab-pane fade" id="supplier">
-                @include('product::admin.products.partials.supplier')
-            </div>
-        </div>
 
          <div class="box-footer">
                             <button type="submit" class="btn btn-primary btn-flat">{{ trans('core::core.button.update') }}</button>

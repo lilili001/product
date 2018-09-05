@@ -4,6 +4,7 @@ namespace Modules\Product\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Modules\Media\Repositories\FileRepository;
 use Modules\Product\Entities\Attrset;
 use Modules\Product\Entities\Product;
@@ -12,7 +13,7 @@ use Modules\Product\Http\Requests\UpdateProductRequest;
 use Modules\Product\Repositories\CategoryRepository;
 use Modules\Product\Repositories\ProductRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
-
+use AjaxResponse;
 class ProductController extends AdminBaseController
 {
     /**
@@ -65,6 +66,7 @@ class ProductController extends AdminBaseController
      */
     public function store(CreateProductRequest $request)
     {
+        info($request->all());
         $product = $this->product->create($request->all());
         //return redirect()->route('admin.product.product.edit',['product'=>$product]);
         return redirect()->route('admin.product.product.index')
@@ -93,6 +95,7 @@ class ProductController extends AdminBaseController
      */
     public function update(Product $product, UpdateProductRequest $request)
     {
+
         $this->product->update($product, $request->all());
 
         //return redirect()->back();
@@ -109,8 +112,28 @@ class ProductController extends AdminBaseController
     public function destroy(Product $product)
     {
         $this->product->destroy($product);
-
         return redirect()->route('admin.product.product.index')
             ->withSuccess(trans('core::core.messages.resource deleted', ['name' => trans('product::products.title.products')]));
+    }
+
+    public function bulk_delete(Request $request)
+    {
+        $ids = $request->get('ids');
+
+        foreach ($ids as $id){
+            $product = Product::find($id);
+            try{
+                DB::transaction(function() use($product){
+                    $product->translations()->delete();
+                    $product->attr()->delete();
+                    $product->sku()->delete();
+                    $product->delete();
+                });
+            }catch (Exception $e){
+                return AjaxResponse::fail($e->getMessage());
+            }
+        }
+
+        return AjaxResponse::success('批量删除成功');
     }
 }

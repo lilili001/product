@@ -77,6 +77,13 @@ $router->group(['prefix' =>'/product'], function (Router $router) {
         'uses' => 'ProductController@destroy',
         'middleware' => 'can:product.products.destroy'
     ]);
+
+    $router->post('/bulk-delete',[
+        'as' => 'admin.product.bulk-delete',
+        'uses' => 'ProductController@bulk_delete',
+        'middleware' => 'can:product.products.destroy'
+    ]);
+
     $router->bind('category', function ($id) {
         return app('Modules\Product\Repositories\CategoryRepository')->find($id);
     });
@@ -214,4 +221,11 @@ $router->group(['prefix' =>'/product'], function (Router $router) {
         $data = $repository->search(  (string) request('q')  );
         return $data;
     });
+
+    /* bulk upload */
+    $router->post('import',[
+        'as' => 'admin.product.bulk-import',
+        'uses' => 'BulkController@import',
+        'middleware' => 'logged.in'
+    ]);
 });

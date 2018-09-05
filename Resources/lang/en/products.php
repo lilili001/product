@@ -12,6 +12,10 @@ return [
     ],
     'button' => [
         'create product' => 'Create a product',
+        'delete product' => 'Delete product',
+        'bulk delete' => 'Bulk Delete',
+        'bulk import' => 'Bulk Upload',
+        'bulk export' => 'Bulk Export',
     ],
     'table' => [
         'attrset' => 'Attribute Set',

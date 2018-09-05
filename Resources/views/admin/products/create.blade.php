@@ -60,13 +60,25 @@
                         {!! $errors->first("category_id", '<span class="help-block">:message</span>') !!}
                     </div>
 
-                    {!! Form::label("is featured", 'Is Featured:') !!}
-                    <select name="is_featured" id="is_featured" class="form-control">
-                        <option value="">请选择</option>
-                        <option value="1">是</option>
-                        <option value="0">否</option>
-                    </select>
+                    <div class="form-group{{ $errors->has("is_featured") ? ' has-error' : '' }}">
+                        {!! Form::label("is featured", 'Is Featured:') !!}
+                        <select name="is_featured" id="is_featured" class="form-control">
+                            <option value="">请选择</option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                        {!! $errors->first("is_featured", '<span class="help-block">:message</span>') !!}
+                    </div>
 
+                    <div class="form-group{{ $errors->has("status") ? ' has-error' : '' }}">
+                        {!! Form::label("Status", 'Status:') !!}
+                        <select name="status"  class="form-control">
+                            <option value="">请选择</option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                        {!! $errors->first("status", '<span class="help-block">:message</span>') !!}
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,6 +105,7 @@
 @push('js-stack')
 
     <script src="{{mix('js/lib.js')}}"></script>
+    <script src="/js/slug.js"></script>
     <script type="text/javascript">
         $( document ).ready(function() {
             $(document).keypressAction({

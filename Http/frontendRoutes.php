@@ -97,3 +97,4 @@ $router->group(['prefix'=>'search'],function(Router $router){
     $locale = LaravelLocalization::setLocale() ?: App::getLocale();
     $router->get('/result',['as' => $locale . '.search.result', 'uses' => 'PublicController@search']);
 });
+

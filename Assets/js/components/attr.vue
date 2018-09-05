@@ -7,7 +7,7 @@
                     </select>
             </div>
            
-            <input type="hidden" name="saleAttrData" v-model="JSON.stringify(ruleForm)">
+            <input type="hidden" name="sale_attr_data" v-model="JSON.stringify(ruleForm)">
     </div>
 </template>
 <script>

@@ -41,7 +41,7 @@
                         <el-col :span="22">
                             <div class="grid-content">
                                 <el-input v-model="size_obj" class="w300" size="small" clearable></el-input>
-                                <input type="hidden" required number="true" name="size_obj" v-model="size_obj"/>
+                                <input type="hidden" required name="size_obj" v-model="size_obj"/>
                             </div>
                         </el-col>
                     </el-row>
@@ -50,7 +50,7 @@
         </el-row>
 
         <el-row class="mar-t20 mar-b14">
-            <el-col :span="2">price(USD)</el-col>
+            <el-col :span="2">price <span class="red">(USD)</span> </el-col>
             <el-col :span="22">
                 <div class="grid-content">
                     <el-input v-model="price" class=" " size="small" clearable></el-input>
@@ -60,11 +60,11 @@
         </el-row>
 
         <el-row class="mar-t20 mar-b14">
-            <el-col :span="2">特价(USD)</el-col>
+            <el-col :span="2">特价 <span class="red">(USD)</span> </el-col>
             <el-col :span="22">
                 <div class="grid-content">
-                    <el-input v-model="specialPrice" class="" size="small" clearable></el-input>
-                    <input type="hidden" required number="true" name="specialPrice" v-model="specialPrice"/>
+                    <el-input v-model="special_price" class="" size="small" clearable></el-input>
+                    <input type="hidden" required number="true" name="special_price" v-model="special_price"/>
                 </div>
             </el-col>
         </el-row>
@@ -76,10 +76,13 @@
                     <el-date-picker
                             v-model="date_special_price"
                             type="daterange"
+                            format="yyyy-MM-dd"
+                            value-format="yyyy-MM-dd"
                             range-separator="至"
                             start-placeholder="开始日期"
                             end-placeholder="结束日期">
                     </el-date-picker>
+                    <input v-model="date_special_price" name="date_special_price" type="hidden" >
                 </div>
             </el-col>
         </el-row>
@@ -121,13 +124,14 @@
             </span>
         </el-dialog>
 
-        <input v-model="JSON.stringify(swatchColor)" name="swatchColor" type="hidden"/>
-        <input v-model="JSON.stringify(tableData6)" name="skuData[tableData6]" type="hidden"/>
-        <input v-model="JSON.stringify(checkList)" name="skuData[checkList]" type="hidden"/>
+        <input v-model="JSON.stringify(swatchColor)" name="swatch_color" type="hidden"/>
+        <input v-model="JSON.stringify(tableData6)" name="sku_data[tableData6]" type="hidden"/>
+        <input v-model="JSON.stringify(checkList)" name="sku_data[checkList]" type="hidden"/>
 
-        <input v-model="price" name="skuData[price]" type="hidden"/>
-        <input v-model="price" name="skuData[specialPrice]" type="hidden"/>
-        <input v-model="stock" name="skuData[stock]" type="hidden"/>
+
+        <!--<input v-model="price" name="sku_data[price]" type="hidden"/>
+        <input v-model="special_price" name="sku_data[special_price]" type="hidden"/>
+        <input v-model="stock" name="sku_data[stock]" type="hidden"/>-->
 
     </div>
 </template>
@@ -167,6 +171,8 @@
     .custom_button_nopadding {
         padding: 0;
     }
+    .sku_input{border:1px solid #ddd}
+    .red{color:red;font-size:12px;}
 </style>
 <script type="text/javascript">
     import {mapState, mapGetters, mapActions} from 'vuex';
@@ -183,7 +189,7 @@
                 show_size_obj:false,
                 size_obj:'',
                 price: '',
-                specialPrice:'',
+                special_price:'',
                 date_special_price:'',
                 isFeatured: false,
                 stock: '',
@@ -234,7 +240,6 @@
                 return !!this.pdc ? JSON.parse(this.pdc) : null;
             },
             swatchColor: function () {
-
                 return !!this.pdc &&  !!this.pdcObj.swatch_colors ? JSON.parse(this.pdcObj.swatch_colors) :  {}
             },
             fillDataAttr: function () {
@@ -254,14 +259,6 @@
                 this.sizeObj = this.pdcObj.size_obj;
             }
 
-            //if(this.skuAttrs.length==0) return;
-            const loading = this.$loading({
-                lock: true,
-                //text: 'Loading',
-                //spinner: 'el-icon-loading',
-                //background: 'rgba(0, 0, 0, 0.7)'
-            });
-
             var timer = setTimeout(() => {
                 this.tableData6 = this.fillDataSku.map((item) => {
                     return item.settings;
@@ -269,11 +266,15 @@
                 //反填price and stock
                 this.price = this.pdcObj.price;
                 this.stock = this.pdcObj.stock;
+                this.special_price = this.pdcObj.special_price;
+                this.size_obj = this.pdcObj.size_obj;
+                this.date_special_price =  !!this.pdcObj.date_special_price ? this.pdcObj.date_special_price.split(',') : '';
+
                 this.handleResult();
                 if (!!this.result && this.tableData6.length > 0) {
                     this.createTableAndMerge();
                 }
-                loading.close();
+
                 clearInterval(timer);
             }, 2000);
         },
@@ -394,7 +395,7 @@
                     var obj1 = _.zipObject(readyKeys, newArr);
                     var curRow = _.find(this.tableData6,obj1);
 
-                    str2 += `<td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input price" required number="true" name="sku_row_price_${i}" name1="sku_row_price[]" value="${curRow.price}" />(USD)</div></td>
+                    str2 += `<td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input price" required number="true" name="sku_row_price_${i}" name1="sku_row_price[]" value="${curRow.price}" /><span class="red">(USD)</span></div></td>
                         <td><div class="cell"><input type="text" data-resi="${this.result[i]}" class="ivu-input sku_input" required number="true" name="sku_row_qty_${i}" name1="sku_row_qty[]" value="${curRow.stock}" /></div></td>`;
                     strBody += '<tr>' + str2 + '</tr>';
                 }
