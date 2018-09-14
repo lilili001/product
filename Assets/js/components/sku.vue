@@ -203,11 +203,10 @@
                 tableData6: [],
                 result: [],
                 show_size_obj:false,
-<<<<<<< HEAD
+
                 size_headers:[],
                 size_body:{},
-=======
->>>>>>> 23432d70f5115c5c97ecf27b79c618e2b512461d
+
                 size_obj:'',
                 price: '',
                 special_price:'',
@@ -291,7 +290,7 @@
                 this.size_obj = this.pdcObj.size_obj;
                 this.date_special_price =  !!this.pdcObj.date_special_price ? this.pdcObj.date_special_price.split(',') : '';
 
-<<<<<<< HEAD
+
                 /*尺码表自定义开始*/
                 this.size_attr = _.filter( this.skuAttrs,function(item){
                     return item.key == 'size';
@@ -314,27 +313,21 @@
 
                 /*尺码表自定义结束*/
 
-=======
->>>>>>> 23432d70f5115c5c97ecf27b79c618e2b512461d
                 this.handleResult();
                 if (!!this.result && this.tableData6.length > 0) {
                     this.createTableAndMerge();
                 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 23432d70f5115c5c97ecf27b79c618e2b512461d
                 clearInterval(timer);
             }, 2000);
         },
         methods: {
-<<<<<<< HEAD
+
             changeSizeDimension(){
                 this.size_obj = JSON.stringify(this.size_body);
                 $('[name="size_obj"]').val(this.size_obj);
             },
-=======
->>>>>>> 23432d70f5115c5c97ecf27b79c618e2b512461d
+
             getAllImages(){
                 axios.get(route('api.media.all-vue', {page: 1, per_page: 15, folder_id: 0})).then((res) => {
                     this.pageData.collection = res.data.data;

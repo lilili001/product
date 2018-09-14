@@ -134,7 +134,7 @@
                 radioClass: 'iradio_flat-blue'
             });
                 $("form").validate({
- 
+
                     ignore: [],
 
                     invalidHandler: function(e, validator) {
