@@ -41,29 +41,29 @@
         </el-row>
 
         <el-row class="mar-t20 mar-b14" v-show="show_size_obj">
-        <el-col :span="2">size chart</el-col>
-        <el-col :span="22">
-            <div class="grid-content">
+            <el-col :span="2">size chart</el-col>
+            <el-col :span="22">
+                <div class="grid-content">
 
-                <table class="table table-bordered">
-                    <thead>
+                    <table class="table table-bordered">
+                        <thead>
                         <tr>
                             <th width="40">\</th>
                             <th v-for="(size_header,index0) in size_headers" :key="index0">{{size_header['label']}}(cm)</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr v-for="(size_row,index) in size_body" :key="index">
                             <td width="40"><span class="key w40">{{index}}</span></td>
                             <td v-for="(weidu,index2) in size_row" :key="index2">
                                 <input @keyup="changeSizeDimension" type="text" :name="index+'_'+index2" v-model="size_body[index][index2]" required number min="0" >
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-                <input v-model="JSON.stringify(size_body)" name="size_obj" type="hidden">
-            </div>
-        </el-col>
+                        </tbody>
+                    </table>
+                    <input v-model="JSON.stringify(size_body)" name="size_obj" type="hidden">
+                </div>
+            </el-col>
         </el-row>
 
         <el-row class="mar-t20 mar-b14">
@@ -291,27 +291,7 @@
                 this.date_special_price =  !!this.pdcObj.date_special_price ? this.pdcObj.date_special_price.split(',') : '';
 
 
-                /*尺码表自定义开始*/
-                this.size_attr = _.filter( this.skuAttrs,function(item){
-                    return item.key == 'size';
-                });
-                this.size_headers = _.groupBy( JSON.parse( (this.size_attr)[0].size_headers ) , 'locale' )[this.locale];
-
-                this.size_options = (this.size_attr)[0].options;
-
-                if(this.size_obj){
-                    this.size_body = JSON.parse(this.size_obj);
-                }else{
-                    for( var size_k in this.size_options  ){
-                        this.size_body[size_k] = {};
-                        for(var i = 0; i< this.size_headers.length ; i++){
-                            var column = this.size_headers[i];
-                            this.size_body[size_k][column.value] = ''
-                        }
-                    }
-                }
-
-                /*尺码表自定义结束*/
+                this.sizeChart();
 
                 this.handleResult();
                 if (!!this.result && this.tableData6.length > 0) {
@@ -371,7 +351,8 @@
                 const arr1 = this.handleResult();
 
                 if( (this.checkList.size).length > 0 ){
-                    this.show_size_obj = true
+                    this.show_size_obj = true;
+                    this.sizeChart();
                 }else{
                     this.show_size_obj = false;
                     this.size_obj = '';
@@ -408,6 +389,29 @@
                 //         })
                 //         let tdVal = attr[0].options[newArr[j]][this.locale];
                 //         return tdVal;
+            },
+            sizeChart(){
+                /*尺码表自定义开始*/
+                this.size_attr = _.filter( this.skuAttrs,function(item){
+                    return item.key == 'size';
+                });
+                this.size_headers = _.groupBy( JSON.parse( (this.size_attr)[0].size_headers ) , 'locale' )[this.locale];
+
+                this.size_options = (this.size_attr)[0].options;
+
+                if(this.size_obj){
+                    this.size_body = JSON.parse(this.size_obj);
+                }else{
+                    for( var size_k in this.size_options  ){
+                        this.size_body[size_k] = {};
+                        for(var i = 0; i< this.size_headers.length ; i++){
+                            var column = this.size_headers[i];
+                            this.size_body[size_k][column.value] = ''
+                        }
+                    }
+                }
+
+                /*尺码表自定义结束*/
             },
             createTable(){
                 if ($('#createTable').children().length == 0) {
